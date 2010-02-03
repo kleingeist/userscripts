@@ -10,7 +10,7 @@
 
 
 
-(function(myhl) {
+(function glcc() {
     // language list, borrowed from http://gpsgfaq.googlepages.com/google_language_codes.html
     // You can change following list few for your main using. e.g., var list = ['en', 'ja', 'xx-hacker']
     var list = 
@@ -39,7 +39,7 @@
 		hl[0].parentNode.removeChild(hl[0]);
 	
 	
-	var generateOption = function(v) {
+	function generateOption(v) {
 		return '<option value="' + v + '"' + ((v == current)? ' selected="1"' : '') + '>' + v + '</option>';
 	};
 	
@@ -56,4 +56,4 @@
 		parentForm = parentForm.parentNode;
 	}
 	sel.addEventListener("change", function (event) { parentForm.submit(); }, true);
-})('en');
+})();
