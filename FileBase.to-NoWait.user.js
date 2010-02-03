@@ -3,7 +3,7 @@
 // @namespace      http://brainroom.ae35.de
 // @description    Bypass the wait timer on FileBase.to. Optional redirects always to the direct download instead of the DivX streaming page.
 // @version        1.0
-// @copyright      2010+, kleingeist (http://ae35.de)
+// @copyright      2010+, kleingeist (http://github.com/kleingeist/userscripts)
 // @licence        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @include        http://filebase.to/files/*
 // @include        http://filebase.to/download/*
