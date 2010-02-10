@@ -29,7 +29,7 @@ if (uid) {
 	}
 
 	// enable download button
-	document.getElementById('dlbutton').disabled = false;
+	document.getElementById('dl_free').disabled = false;
 	
 	// submit form
 	form.submit();
