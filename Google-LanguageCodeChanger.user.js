@@ -2,7 +2,7 @@
 // @name           Google Language Code Changer
 // @namespace      http://brainroom.ae35.de
 // @description    Add a select-box for the hl parameter on google result pages.
-// @version        1.5
+// @version        1.6
 // @copyright      2010+, kleingeist (http://github.com/kleingeist/userscripts)
 // @licence        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @include        http://www.google.*/search?*
@@ -11,34 +11,42 @@
 // @include        http://www.google.*/images?*
 // ==/UserScript==
 
-// load options
-var list = GM_getValue("selectedLangs", "").split(" ");
+// initial list
+var list = [];
+
+// greasemonkey specific 
+var GM_functions = !((typeof GM_getValue == 'undefined') || (GM_getValue('a', 'b') == undefined));
+if (GM_functions) {
+	list = GM_getValue("selectedLangs", "").split(" ");
+}
 
 // load the script dependend on ajax or normal google version
 if (window.location.hash.match(/q\=/) || window.location.pathname == '/') {
 	document.addEventListener('DOMAttrModified', DOMAttrModifiedListener, true);
 }
 else {
-	glcc(list);
+	insertSelector(list);
 }
 
 function DOMAttrModifiedListener(e) {
 	// thanks to http://www.amirharel.com/2009/07/19/manipulating-google-results-ajax-version/ for the #foot hint
 	if (e.target.id == 'foot' && !document.getElementById('glccHl')) {
-		glcc(list);
+		insertSelector(list);
 	}
 }
 
-GM_registerMenuCommand('Select Language Codes', function() { 
-	GM_setValue('selectedLangs'
-		, window.prompt('Languages shown in the selection (ex. de for german see http://sites.google.com/site/tomihasa/google-language-codes for full list)'
-			  , GM_getValue('selectedLangs', "")
-		)
-	);
-}, '', 's');
+if (GM_functions) {
+	GM_registerMenuCommand('Select Language Codes', function() { 
+		GM_setValue('selectedLangs'
+			, window.prompt('Languages shown in the selection (ex. de for german see http://sites.google.com/site/tomihasa/google-language-codes for full list)'
+				  , GM_getValue('selectedLangs', "")
+			)
+		);
+	}, '', 's');
+}
 
 
-function glcc(list) {	
+function insertSelector(list) {	
 
 	// Thanks to http://sites.google.com/site/tomihasa/google-language-codes for the list
 	var codes = 
@@ -83,7 +91,7 @@ function glcc(list) {
 	var hl = document.getElementsByName('hl');
 	
 	var current;
-	if(hl.length > 0)
+	if (hl.length > 0)
 		current = hl[0].value;
 	else
 		current = list[0]
