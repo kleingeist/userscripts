@@ -8,7 +8,9 @@
 // @include        http://www.google.*/search?*
 // @include        http://www.google*/#*q=*
 // @include        http://www.google.*/
+// @include        http://www.google.*/webhp*
 // @include        http://www.google.*/images?*
+// @include        http://www.google.*/imghp*
 // ==/UserScript==
 
 // initial list
@@ -20,13 +22,10 @@ if (GM_functions) {
 	list = GM_getValue("selectedLangs", "").split(" ");
 }
 
-// load the script dependend on ajax or normal google version
-if (window.location.hash.match(/q\=/) || window.location.pathname == '/') {
-	document.addEventListener('DOMAttrModified', DOMAttrModifiedListener, true);
-}
-else {
+if (!(window.location.hash.match(/q\=/) || window.location.pathname == '/' || window.location.pathname == '/webhp' || window.location.pathname == '/webhp')) {
 	insertSelector(list);
 }
+document.addEventListener('DOMAttrModified', DOMAttrModifiedListener, true);
 
 function DOMAttrModifiedListener(e) {
 	// thanks to http://www.amirharel.com/2009/07/19/manipulating-google-results-ajax-version/ for the #foot hint
@@ -89,19 +88,12 @@ function insertSelector(list) {
 	}
 
 	var hl = document.getElementsByName('hl');
+	var current = list[0]; // default
 	
-	var current;
-	if (hl.length > 0)
-		current = hl[0].value;
-	else
-		current = list[0]
-
 	if (hl.length > 0) {
-		for (i = hl.length - 1; i > -1; i--) {
-			hl[i].parentNode.removeChild(hl[i]);
-		}
+		current = hl[0].value;
+		hl[0].parentNode.removeChild(hl[0]);
 	}
-	
 	
 	function generateOption(k) {
 		var index = codes.indexOf(k);
@@ -123,4 +115,4 @@ function insertSelector(list) {
 	button.parentNode.appendChild(container);
 	
 	sel.addEventListener("change", function (event) { document.getElementsByName('btnG')[0].click(); }, true);
-};
+}
