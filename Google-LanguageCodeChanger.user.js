@@ -2,7 +2,7 @@
 // @name           Google Language Code Changer
 // @namespace      http://brainroom.ae35.de
 // @description    Add a select-box for the hl parameter on google result pages.
-// @version        1.6
+// @version        1.7
 // @copyright      2010+, kleingeist (http://github.com/kleingeist/userscripts)
 // @licence        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @include        http://www.google.*/search?*
