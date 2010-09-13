@@ -2,7 +2,7 @@
 // @name           Google Language Code Changer
 // @namespace      http://brainroom.ae35.de
 // @description    Add a select-box for the hl parameter on google result pages.
-// @version        1.7
+// @version        1.8
 // @copyright      2010+, kleingeist (http://github.com/kleingeist/userscripts)
 // @licence        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @include        http://www.google.*/search?*
@@ -11,20 +11,25 @@
 // @include        http://www.google.*/webhp*
 // @include        http://www.google.*/images?*
 // @include        http://www.google.*/imghp*
+// @exclude        http://www.google.*/s?*
 // ==/UserScript==
 
-// initial list
+// Initial list
 var list = [];
 
-// greasemonkey specific 
+// Check if Greasemonkey specific functions are available (for Cross-Browser support)
 var GM_functions = !((typeof GM_getValue == 'undefined') || (GM_getValue('a', 'b') == undefined));
 if (GM_functions) {
 	list = GM_getValue("selectedLangs", "").split(" ");
 }
 
-if (!(window.location.hash.match(/q\=/) || window.location.pathname == '/' || window.location.pathname == '/webhp' || window.location.pathname == '/webhp')) {
+
+// If we are on a NOT on a start page and the ajax isn't enabled, we can insert the selector instantly...
+if (!(window.location.hash.match(/q\=/) || window.location.pathname == '/' || window.location.pathname == '/webhp' || window.location.pathname == '/imghp')) {
 	insertSelector(list);
 }
+
+//... but to be on the safe site we always add the listener
 document.addEventListener('DOMAttrModified', DOMAttrModifiedListener, true);
 
 function DOMAttrModifiedListener(e) {
@@ -34,6 +39,7 @@ function DOMAttrModifiedListener(e) {
 	}
 }
 
+	
 if (GM_functions) {
 	GM_registerMenuCommand('Select Language Codes', function() { 
 		GM_setValue('selectedLangs'
@@ -43,7 +49,6 @@ if (GM_functions) {
 		);
 	}, '', 's');
 }
-
 
 function insertSelector(list) {	
 
@@ -89,10 +94,8 @@ function insertSelector(list) {
 
 	var hl = document.getElementsByName('hl');
 	var current = list[0]; // default
-	
 	if (hl.length > 0) {
 		current = hl[0].value;
-		hl[0].parentNode.removeChild(hl[0]);
 	}
 	
 	function generateOption(k) {
@@ -105,14 +108,16 @@ function insertSelector(list) {
 	
 	var sel = document.createElement('select');
 	sel.setAttribute('id','glccHl');
-	sel.setAttribute('name', 'hl');
 	sel.style.margin = "0 2px";
 	sel.innerHTML = list.map(generateOption).join("\n");
 	container.appendChild(sel);
-
+	
 	var button = document.getElementsByName('btnG')[0];
 	button.parentNode.style.whiteSpace = "nowrap";
 	button.parentNode.appendChild(container);
 	
-	sel.addEventListener("change", function (event) { document.getElementsByName('btnG')[0].click(); }, true);
+	sel.addEventListener("change", function (event) {
+		document.getElementsByName('hl')[0].value = this.options[this.selectedIndex].value;
+		document.getElementsByName('btnG')[0].click();
+	}, true);
 }
